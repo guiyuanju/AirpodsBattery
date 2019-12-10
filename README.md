@@ -1,4 +1,4 @@
-# AirpodsBattery
+# AirpodsBattery ![](Images/logo.png)
 An Alfred workflow to display the battery info of your connected Airpods.
 
 ![Scrennshot 1](Images/1.jpg)
