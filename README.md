@@ -1,9 +1,9 @@
 # AirpodsBattery
 An Alfred workflow to display the battery info of your connected Airpods.
 
-![](./images/1.jpg)
-![](./images/2.jpg)
-![](./images/3.jpg)
+![Scrennshot 1](./images/1.jpg)
+![Scrennshot 2](./images/2.jpg)
+![Scrennshot 3](./images/3.jpg)
 
 This is a workflow used to display the battery of connected Airpods with the state of connection.
 
