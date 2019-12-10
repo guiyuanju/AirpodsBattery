@@ -17,7 +17,7 @@ is installed, after selecting your Airpods as your default device through Blueto
 
 ## Install
 
-Download released file and double click to intall it.
+Download the newest released file [AirpodsBatteryWorkflow.zip](https://github.com/BeneathCloud/AirpodsBattery/releases/download/V1.0.1/AirpodsBatteryWorkflow.zip), unzip it and double click to intall it.
 
 ## Usage
 
