@@ -1,4 +1,4 @@
-query=$1
+# query=$1
 
 #!/bin/bash
 # AirPods Battery CLI, Version 2.3
@@ -16,13 +16,12 @@ if [[ "${CONNECTED}" ]]; then
     declare -x "${I}"="$(awk -v pat="${I}" '$0~pat{gsub (";",""); print $3 }'<<<"${BLUETOOTH_DATA}")"
     [[ ! -z "${!I}" ]] && OUTPUT="${OUTPUT} $(awk '/BatteryPercent/{print substr($0,15,1)": "}'<<<"${I}")${!I}%"
   done
-# Modified
+# Modified by Laz
   printf -v res "%s\\n" "${OUTPUT}"
 else
-# Modified
+# Modified by Laz
   printf -v res "%s Not Connected\\n" "${OUTPUT}"
 fi
-
 
 
 # AirpodsBattery Alfred workflow
@@ -32,10 +31,10 @@ fi
 battery=$(echo $res | awk '{if ($2 ~ "n|Not") print "Not Connected"; else print "L: " $7, "R: " $10}')
 if [[ $battery == "Not Connected" ]]; then
 	arg=0;
-	subtitle="Press to connect";
+	subtitle="Press Enter to connect";
 else
 	arg=1;
-	subtitle="Press to disconnect";
+	subtitle="Press Enter to disconnect";
 fi
 
 cat << EOB
@@ -46,7 +45,6 @@ cat << EOB
 		"title": "$battery",
 		"subtitle": "$subtitle",
 		"arg": "$arg",
-		"autocomplete": "Desktop",
 	}
 ]}
 EOB
