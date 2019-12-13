@@ -13,7 +13,7 @@ is installed, after selecting your Airpods as your default device through Blueto
 ## Requirements
 
 1. Alfred Powerpack
-2. (optional but recommned) [Bluetooth Manager workflow](https://github.com/bmunoz89/alfred-wf-bluetooth-manage)
+2. (optional but recommned) [Bluetooth Manager workflow](https://github.com/bmunoz89/alfred-wf-bluetooth-manager)
 
 ## Install
 
