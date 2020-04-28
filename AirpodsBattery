@@ -28,7 +28,17 @@ fi
 # Author: Laz (lasviceju@gmail.com)
 # License: MIT
 
-battery=$(echo $res | awk '{if ($2 ~ "n|Not") print "Not Connected"; else print "L: " $7, "R: " $10}')
+battery=$(echo $res | awk '{
+	if ($2 ~ "n|Not") {
+		print "Not Connected";
+	} else {
+		l = "";
+		r = "";
+		for (i = 1; i < $NF; i++) {
+			if ($i == "L:") l = $(i + 2); 
+			if ($i == "R:") r = $(i + 2);
+		} 
+		print "L: " l, "R: " r}}')
 if [[ $battery == "Not Connected" ]]; then
 	arg=0;
 	subtitle="Press Enter to connect";
