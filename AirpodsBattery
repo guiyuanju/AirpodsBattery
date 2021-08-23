@@ -1,60 +1,43 @@
-# query=$1
+#!/usr/bin/env bash
 
-#!/bin/bash
-# AirPods Battery CLI, Version 2.3
-# Contributors: duk242, ankushg, spetykowski, danozdotnet
-# Released under the MIT License.
-
-OUTPUT='🎧'; BLUETOOTH_DEFAULTS=$(defaults read /Library/Preferences/com.apple.Bluetooth); SYSTEM_PROFILER=$(system_profiler SPBluetoothDataType 2>/dev/null)
+OUTPUT='';
+BLUETOOTH_DEFAULTS=$(defaults read /Library/Preferences/com.apple.Bluetooth);
+SYSTEM_PROFILER=$(system_profiler SPBluetoothDataType 2>/dev/null)
 MAC_ADDR=$(grep -b2 "Minor Type: Headphones"<<<"${SYSTEM_PROFILER}"|awk '/Address/{print $3}')
 CONNECTED=$(grep -ia6 "${MAC_ADDR}"<<<"${SYSTEM_PROFILER}"|awk '/Connected: Yes/{print 1}')
 BLUETOOTH_DATA=$(grep -ia6 '"'"${MAC_ADDR}"'"'<<<"${BLUETOOTH_DEFAULTS}")
-BATTERY_LEVELS=("BatteryPercentCombined" "HeadsetBattery" "BatteryPercentSingle" "BatteryPercentCase" "BatteryPercentLeft" "BatteryPercentRight")
+BATTERY_LEVELS=("BatteryPercentLeft" "BatteryPercentRight")
 
 if [[ "${CONNECTED}" ]]; then
-  for I in "${BATTERY_LEVELS[@]}"; do
-    declare -x "${I}"="$(awk -v pat="${I}" '$0~pat{gsub (";",""); print $3 }'<<<"${BLUETOOTH_DATA}")"
-    [[ ! -z "${!I}" ]] && OUTPUT="${OUTPUT} $(awk '/BatteryPercent/{print substr($0,15,1)": "}'<<<"${I}")${!I}%"
-  done
-# Modified by Laz
-  printf -v res "%s\\n" "${OUTPUT}"
+    for I in "${BATTERY_LEVELS[@]}"; do
+        declare -x "${I}"="$(awk -v pat="${I}" '$0~pat{gsub (";",""); print $3 }'<<<"${BLUETOOTH_DATA}")"
+        [[ ! -z "${!I}" ]] && OUTPUT="${OUTPUT} $(awk '/BatteryPercent/{print substr($0,15,1)": "}'<<<"${I}")${!I}%"
+    done
+
+    battery=$(echo $OUTPUT | awk '{
+        l = "";
+        r = "";
+        for (i = 1; i < NF; i++) {
+          if ($i == "L:") {l = $(i + 2);}
+          else if ($i == "R:") {r = $(i + 2);}
+        } 
+        print "L: " l, "R: " r
+      }')
+    arg=1;
+    subtitle="Press Enter to disconnect";
 else
-# Modified by Laz
-  printf -v res "%s Not Connected\\n" "${OUTPUT}"
-fi
-
-
-# AirpodsBattery Alfred workflow
-# Author: Laz (lasviceju@gmail.com)
-# License: MIT
-
-battery=$(echo $res | awk '{
-	if ($2 ~ "n|Not") {
-		print "Not Connected";
-	} else {
-		l = "";
-		r = "";
-		for (i = 1; i < $NF; i++) {
-			if ($i == "L:") l = $(i + 2); 
-			if ($i == "R:") r = $(i + 2);
-		} 
-		print "L: " l, "R: " r}}')
-if [[ $battery == "Not Connected" ]]; then
-	arg=0;
-	subtitle="Press Enter to connect";
-else
-	arg=1;
-	subtitle="Press Enter to disconnect";
+    battery="Not Connected"
+    arg=0;
+    subtitle="Press Enter to connect";
 fi
 
 cat << EOB
 {"items": [
-
-	{
-		"uid": "battery",
-		"title": "$battery",
-		"subtitle": "$subtitle",
-		"arg": "$arg",
-	}
+    {
+        "uid": "battery",
+        "title": "$battery",
+        "subtitle": "$subtitle",
+        "arg": "$arg",
+    }
 ]}
 EOB
